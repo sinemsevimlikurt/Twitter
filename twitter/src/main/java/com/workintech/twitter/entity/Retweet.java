@@ -26,4 +26,36 @@ public class Retweet {
 
     @Column(name = "created_at")
     private LocalDateTime createdAt;
+
+    public Long getRetweetId() {
+        return retweetId;
+    }
+
+    public Tweet getTweet() {
+        return tweet;
+    }
+
+    public User getUser() {
+        return user;
+    }
+
+    public LocalDateTime getCreatedAt() {
+        return createdAt;
+    }
+
+    public void setRetweetId(Long retweetId) {
+        this.retweetId = retweetId;
+    }
+
+    public void setTweet(Tweet tweet) {
+        this.tweet = tweet;
+    }
+
+    public void setUser(User user) {
+        this.user = user;
+    }
+
+    public void setCreatedAt(LocalDateTime createdAt) {
+        this.createdAt = createdAt;
+    }
 }
