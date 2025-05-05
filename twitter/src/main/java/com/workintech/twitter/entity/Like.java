@@ -20,4 +20,20 @@ public class Like {
     @ManyToOne
     @JoinColumn(name = "tweet_id", nullable = false)
     private Tweet tweet;
+
+    public User getUser() {
+        return user;
+    }
+
+    public Tweet getTweet() {
+        return tweet;
+    }
+
+    public void setUser(User user) {
+        this.user = user;
+    }
+
+    public void setTweet(Tweet tweet) {
+        this.tweet = tweet;
+    }
 }

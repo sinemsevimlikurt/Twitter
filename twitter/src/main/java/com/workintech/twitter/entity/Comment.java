@@ -29,4 +29,44 @@ public class Comment {
 
     @Column(name = "created_at")
     private LocalDateTime createdAt;
+
+    public Long getCommentId() {
+        return commentId;
+    }
+
+    public Tweet getTweet() {
+        return tweet;
+    }
+
+    public User getUser() {
+        return user;
+    }
+
+    public String getContent() {
+        return content;
+    }
+
+    public LocalDateTime getCreatedAt() {
+        return createdAt;
+    }
+
+    public void setCommentId(Long commentId) {
+        this.commentId = commentId;
+    }
+
+    public void setTweet(Tweet tweet) {
+        this.tweet = tweet;
+    }
+
+    public void setUser(User user) {
+        this.user = user;
+    }
+
+    public void setContent(String content) {
+        this.content = content;
+    }
+
+    public void setCreatedAt(LocalDateTime createdAt) {
+        this.createdAt = createdAt;
+    }
 }
