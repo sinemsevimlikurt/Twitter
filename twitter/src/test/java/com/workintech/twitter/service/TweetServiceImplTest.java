@@ -56,11 +56,7 @@ public class TweetServiceImplTest {
         testTweet.setCreatedAt(LocalDateTime.now());
 
         // Setup test tweet DTO
-        testTweetDTO = new TweetDTO();
-        testTweetDTO.setTweetId(1L);
-        testTweetDTO.setContent("Test tweet content");
-        testTweetDTO.setUserId(1L);
-        testTweetDTO.setUsername("testuser");
+        testTweetDTO = new TweetDTO(1L, "Test tweet content", 1L, "testuser");
     }
 
     @Test
@@ -74,8 +70,8 @@ public class TweetServiceImplTest {
 
         // Assert
         assertNotNull(result);
-        assertEquals(testTweetDTO.getContent(), result.getContent());
-        assertEquals(testTweetDTO.getUserId(), result.getUserId());
+        assertEquals(testTweetDTO.content(), result.content());
+        assertEquals(testTweetDTO.userId(), result.userId());
         verify(tweetRepository, times(1)).save(any(Tweet.class));
     }
 
@@ -93,7 +89,7 @@ public class TweetServiceImplTest {
     void findTweetsByUserId_Success() {
         // Arrange
         when(userRepository.findById(1L)).thenReturn(Optional.of(testUser));
-        when(tweetRepository.findByUserId(1L)).thenReturn(Arrays.asList(testTweet));
+        when(tweetRepository.findByUser_UserId(1L)).thenReturn(Arrays.asList(testTweet));
 
         // Act
         List<TweetDTO> result = tweetService.findTweetsByUserId(1L);
@@ -101,7 +97,7 @@ public class TweetServiceImplTest {
         // Assert
         assertNotNull(result);
         assertEquals(1, result.size());
-        assertEquals(testTweetDTO.getContent(), result.get(0).getContent());
+        assertEquals(testTweetDTO.content(), result.get(0).content());
     }
 
     @Test
@@ -114,8 +110,8 @@ public class TweetServiceImplTest {
 
         // Assert
         assertNotNull(result);
-        assertEquals(testTweetDTO.getTweetId(), result.getTweetId());
-        assertEquals(testTweetDTO.getContent(), result.getContent());
+        assertEquals(testTweetDTO.tweetId(), result.tweetId());
+        assertEquals(testTweetDTO.content(), result.content());
     }
 
     @Test
@@ -138,7 +134,7 @@ public class TweetServiceImplTest {
 
         // Assert
         assertNotNull(result);
-        assertEquals(testTweetDTO.getContent(), result.getContent());
+        assertEquals(testTweetDTO.content(), result.content());
         verify(tweetRepository, times(1)).save(any(Tweet.class));
     }
 

@@ -2,6 +2,8 @@ package com.workintech.twitter.dto;
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
+import lombok.Data;
+
 
 public record CommentDTO(
     Long commentId,
@@ -20,5 +22,7 @@ public record CommentDTO(
     // Default constructor for deserialization
     public CommentDTO() {
         this(null, "", null, null, "");
+
     }
+
 }

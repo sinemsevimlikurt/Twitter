@@ -70,12 +70,7 @@ public class CommentServiceImplTest {
         testComment.setCreatedAt(LocalDateTime.now());
 
         // Setup test comment DTO
-        testCommentDTO = new CommentDTO();
-        testCommentDTO.setCommentId(1L);
-        testCommentDTO.setContent("Test comment content");
-        testCommentDTO.setUserId(1L);
-        testCommentDTO.setTweetId(1L);
-        testCommentDTO.setUsername("testuser");
+        testCommentDTO = new CommentDTO(1L, "Test comment content", 1L, 1L, "testuser");
     }
 
     @Test
@@ -90,9 +85,9 @@ public class CommentServiceImplTest {
 
         // Assert
         assertNotNull(result);
-        assertEquals(testCommentDTO.getContent(), result.getContent());
-        assertEquals(testCommentDTO.getUserId(), result.getUserId());
-        assertEquals(testCommentDTO.getTweetId(), result.getTweetId());
+        assertEquals(testCommentDTO.content(), result.content());
+        assertEquals(testCommentDTO.userId(), result.userId());
+        assertEquals(testCommentDTO.tweetId(), result.tweetId());
         verify(commentRepository, times(1)).save(any(Comment.class));
     }
 
@@ -121,7 +116,7 @@ public class CommentServiceImplTest {
     void findCommentsByTweetId_Success() {
         // Arrange
         when(tweetRepository.findById(1L)).thenReturn(Optional.of(testTweet));
-        when(commentRepository.findByTweetId(1L)).thenReturn(Arrays.asList(testComment));
+        when(commentRepository.findByTweet_TweetId(1L)).thenReturn(Arrays.asList(testComment));
 
         // Act
         List<CommentDTO> result = commentService.findCommentsByTweetId(1L);
@@ -129,7 +124,7 @@ public class CommentServiceImplTest {
         // Assert
         assertNotNull(result);
         assertEquals(1, result.size());
-        assertEquals(testCommentDTO.getContent(), result.get(0).getContent());
+        assertEquals(testCommentDTO.content(), result.get(0).content());
     }
 
     @Test
@@ -143,7 +138,7 @@ public class CommentServiceImplTest {
 
         // Assert
         assertNotNull(result);
-        assertEquals(testCommentDTO.getContent(), result.getContent());
+        assertEquals(testCommentDTO.content(), result.content());
         verify(commentRepository, times(1)).save(any(Comment.class));
     }
 

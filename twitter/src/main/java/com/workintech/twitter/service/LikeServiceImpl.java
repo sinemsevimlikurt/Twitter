@@ -28,17 +28,17 @@ public class LikeServiceImpl implements LikeService {
 
     @Override
     public List<Like> findLikesByTweetId(Long tweetId) {
-        return likeRepository.findByTweetId(tweetId);
+        return likeRepository.findByTweet_TweetId(tweetId);
     }
 
     @Override
     public List<Like> findLikesByUserId(Long userId) {
-        return likeRepository.findByUserId(userId);
+        return likeRepository.findByUser_UserId(userId);
     }
 
     @Override
     public boolean likeExists(Long userId, Long tweetId) {
-        return likeRepository.existsByUserIdAndTweetId(userId, tweetId);
+        return likeRepository.existsByUser_UserIdAndTweet_TweetId(userId, tweetId);
     }
 
     @Override

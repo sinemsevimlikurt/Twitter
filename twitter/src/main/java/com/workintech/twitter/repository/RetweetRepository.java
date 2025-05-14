@@ -6,7 +6,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import java.util.List;
 
 public interface RetweetRepository extends JpaRepository<Retweet, Long> {
-    List<Retweet> findByUserId(Long userId);
-    List<Retweet> findByTweetId(Long tweetId);
-    boolean existsByUserIdAndTweetId(Long userId, Long tweetId);
+    List<Retweet> findByUser_UserId(Long userId);
+    List<Retweet> findByTweet_TweetId(Long tweetId);
+    boolean existsByUser_UserIdAndTweet_TweetId(Long userId, Long tweetId);
 }

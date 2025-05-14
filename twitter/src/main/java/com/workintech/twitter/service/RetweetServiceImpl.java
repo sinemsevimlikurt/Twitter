@@ -57,7 +57,7 @@ public class RetweetServiceImpl implements RetweetService {
         userRepository.findById(userId)
                 .orElseThrow(() -> new TwitterException("User not found with id: " + userId));
 
-        List<Retweet> retweets = retweetRepository.findByUserId(userId);
+        List<Retweet> retweets = retweetRepository.findByUser_UserId(userId);
         return retweets.stream()
                 .map(this::convertToDTO)
                 .collect(Collectors.toList());
@@ -78,7 +78,7 @@ public class RetweetServiceImpl implements RetweetService {
 
     @Override
     public boolean retweetExists(Long userId, Long tweetId) {
-        return retweetRepository.existsByUserIdAndTweetId(userId, tweetId);
+        return retweetRepository.existsByUser_UserIdAndTweet_TweetId(userId, tweetId);
     }
 
     private RetweetDTO convertToDTO(Retweet retweet) {

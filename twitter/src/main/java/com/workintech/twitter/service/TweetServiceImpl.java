@@ -25,11 +25,11 @@ public class TweetServiceImpl implements TweetService {
 
     @Override
     public TweetDTO createTweet(TweetDTO tweetDTO) {
-        User user = userRepository.findById(tweetDTO.getUserId())
-                .orElseThrow(() -> new TwitterException("User not found with id: " + tweetDTO.getUserId()));
+        User user = userRepository.findById(tweetDTO.userId())
+                .orElseThrow(() -> new TwitterException("User not found with id: " + tweetDTO.userId()));
 
         Tweet tweet = new Tweet();
-        tweet.setContent(tweetDTO.getContent());
+        tweet.setContent(tweetDTO.content());
         tweet.setUser(user);
         tweet.setCreatedAt(LocalDateTime.now());
 
@@ -43,7 +43,7 @@ public class TweetServiceImpl implements TweetService {
         userRepository.findById(userId)
                 .orElseThrow(() -> new TwitterException("User not found with id: " + userId));
 
-        List<Tweet> tweets = tweetRepository.findByUserId(userId);
+        List<Tweet> tweets = tweetRepository.findByUser_UserId(userId);
         return tweets.stream()
                 .map(this::convertToDTO)
                 .collect(Collectors.toList());
@@ -67,7 +67,7 @@ public class TweetServiceImpl implements TweetService {
             throw new TwitterException("You are not authorized to update this tweet");
         }
 
-        tweet.setContent(tweetDTO.getContent());
+        tweet.setContent(tweetDTO.content());
         Tweet updatedTweet = tweetRepository.save(tweet);
 
         return convertToDTO(updatedTweet);

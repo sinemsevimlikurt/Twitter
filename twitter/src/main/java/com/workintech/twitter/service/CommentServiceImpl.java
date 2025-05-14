@@ -31,14 +31,14 @@ public class CommentServiceImpl implements CommentService {
 
     @Override
     public CommentDTO createComment(CommentDTO commentDTO) {
-        User user = userRepository.findById(commentDTO.getUserId())
-                .orElseThrow(() -> new TwitterException("User not found with id: " + commentDTO.getUserId()));
+        User user = userRepository.findById(commentDTO.userId())
+                .orElseThrow(() -> new TwitterException("User not found with id: " + commentDTO.userId()));
 
-        Tweet tweet = tweetRepository.findById(commentDTO.getTweetId())
-                .orElseThrow(() -> new TwitterException("Tweet not found with id: " + commentDTO.getTweetId()));
+        Tweet tweet = tweetRepository.findById(commentDTO.tweetId())
+                .orElseThrow(() -> new TwitterException("Tweet not found with id: " + commentDTO.tweetId()));
 
         Comment comment = new Comment();
-        comment.setContent(commentDTO.getContent());
+        comment.setContent(commentDTO.content());
         comment.setUser(user);
         comment.setTweet(tweet);
         comment.setCreatedAt(LocalDateTime.now());
@@ -53,7 +53,7 @@ public class CommentServiceImpl implements CommentService {
         tweetRepository.findById(tweetId)
                 .orElseThrow(() -> new TwitterException("Tweet not found with id: " + tweetId));
 
-        List<Comment> comments = commentRepository.findByTweetId(tweetId);
+        List<Comment> comments = commentRepository.findByTweet_TweetId(tweetId);
         return comments.stream()
                 .map(this::convertToDTO)
                 .collect(Collectors.toList());
@@ -69,7 +69,7 @@ public class CommentServiceImpl implements CommentService {
             throw new TwitterException("You are not authorized to update this comment");
         }
 
-        comment.setContent(commentDTO.getContent());
+        comment.setContent(commentDTO.content());
         Comment updatedComment = commentRepository.save(comment);
 
         return convertToDTO(updatedComment);
