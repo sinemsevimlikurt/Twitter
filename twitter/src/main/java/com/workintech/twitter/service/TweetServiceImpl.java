@@ -6,9 +6,12 @@ import com.workintech.twitter.entity.User;
 import com.workintech.twitter.exception.TwitterException;
 import com.workintech.twitter.repository.TweetRepository;
 import com.workintech.twitter.repository.UserRepository;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -44,6 +47,30 @@ public class TweetServiceImpl implements TweetService {
                 .orElseThrow(() -> new TwitterException("User not found with id: " + userId));
 
         List<Tweet> tweets = tweetRepository.findByUser_UserId(userId);
+        return tweets.stream()
+                .map(this::convertToDTO)
+                .collect(Collectors.toList());
+    }
+    
+    @Override
+    public List<TweetDTO> findAllTweets() {
+        List<Tweet> tweets = tweetRepository.findAll();
+        return tweets.stream()
+                .map(this::convertToDTO)
+                .collect(Collectors.toList());
+    }
+    
+    @Override
+    public List<TweetDTO> findTweetsByUsername(String username) {
+        // Find the user by username first
+        User user = userRepository.findByUsername(username);
+        if (user == null) {
+            // Return empty list if user not found
+            return Collections.emptyList();
+        }
+        
+        // Find tweets by the user's ID
+        List<Tweet> tweets = tweetRepository.findByUser_UserId(user.getUserId());
         return tweets.stream()
                 .map(this::convertToDTO)
                 .collect(Collectors.toList());
@@ -88,10 +115,10 @@ public class TweetServiceImpl implements TweetService {
 
     private TweetDTO convertToDTO(Tweet tweet) {
         return new TweetDTO(
-            tweet.getTweetId(),
-            tweet.getContent(),
-            tweet.getUser().getUserId(),
-            tweet.getUser().getUsername()
+                tweet.getTweetId(),
+                tweet.getContent(),
+                tweet.getUser().getUserId(),
+                tweet.getUser().getUsername()
         );
     }
 }

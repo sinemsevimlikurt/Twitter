@@ -1,3 +1,91 @@
+# Twitter Application
+
+## Overview
+This is a Twitter-like application built with Spring Boot for the backend and React for the frontend. The application allows users to create accounts, post tweets, retweet, like tweets, search for tweets by username, and view their profile with their tweets and liked content.
+
+## Features
+
+### Authentication
+- User registration and login
+- Session-based authentication with cookies
+- Logout functionality
+
+### Main Feed
+- View all tweets in the main feed
+- Create new tweets
+- Like and retweet functionality
+
+### User Profile
+- View your own tweets and retweets
+- View your liked tweets
+- Toggle between tweets and likes views
+
+### Search
+- Search for tweets by username
+- View search results with like and retweet functionality
+
+## Technical Stack
+
+### Backend
+- Spring Boot
+- Spring Security for authentication
+- Spring Data JPA for database access
+- H2 Database (for development)
+
+### Frontend
+- React
+- CSS for styling
+- Fetch API for making HTTP requests
+
+## How to Run
+
+### Backend
+1. Navigate to the `twitter` directory
+2. Run `mvn spring-boot:run` to start the Spring Boot application
+3. The backend will be available at http://localhost:3000
+
+### Frontend
+1. Navigate to the `frontend` directory
+2. Run `npm install` to install dependencies (first time only)
+3. Run `npm start` to start the React development server
+4. The frontend will be available at http://localhost:3200
+
+## API Endpoints
+
+### Authentication
+- `POST /api/auth/register` - Register a new user
+- `POST /api/auth/login` - Login a user
+- `GET /api/auth/current-user` - Get the currently authenticated user
+- `POST /api/auth/logout` - Logout the current user
+
+### Tweets
+- `GET /api/tweet/all` - Get all tweets
+- `GET /api/tweet/findByUserId?userId={userId}` - Get tweets by user ID
+- `GET /api/tweet/search?username={username}` - Search tweets by username
+- `POST /api/tweet` - Create a new tweet
+- `PUT /api/tweet/{tweetId}` - Update a tweet
+- `DELETE /api/tweet/{tweetId}` - Delete a tweet
+
+### Likes
+- `POST /api/like` - Like a tweet
+- `POST /api/like/dislike` - Unlike a tweet
+- `GET /api/like/user/{userId}` - Get tweets liked by a user
+
+### Retweets
+- `POST /api/retweet?tweetId={tweetId}` - Retweet a tweet
+
+## Notes
+- The application uses CORS configuration to allow cross-origin requests between the frontend and backend
+- HTTP Basic authentication is used instead of form-based authentication to avoid redirects that interfere with CORS
+- Session cookies are used to maintain authentication state
+
+## Future Enhancements
+- Add pagination for tweets
+- Implement more advanced search capabilities
+- Add user profile editing
+- Add following/follower functionality
+- Implement real-time updates with WebSockets
+
 FSWEB-s19-Challenge
 Twitter Api
 

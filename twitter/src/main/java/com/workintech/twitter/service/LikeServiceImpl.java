@@ -1,5 +1,6 @@
 package com.workintech.twitter.service;
 
+import com.workintech.twitter.dto.TweetDTO;
 import com.workintech.twitter.entity.Like;
 import com.workintech.twitter.entity.LikeId;
 import com.workintech.twitter.entity.User;
@@ -10,6 +11,7 @@ import com.workintech.twitter.repository.TweetRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class LikeServiceImpl implements LikeService {
@@ -62,5 +64,24 @@ public class LikeServiceImpl implements LikeService {
             LikeId likeId = new LikeId(userId, tweetId);
             likeRepository.deleteById(likeId);
         }
+    }
+    
+    @Override
+    public List<TweetDTO> findLikedTweetsByUserId(Long userId) {
+        // Find all likes by the user
+        List<Like> userLikes = findLikesByUserId(userId);
+        
+        // Extract the tweets from the likes and convert them to DTOs
+        return userLikes.stream()
+                .map(like -> {
+                    Tweet tweet = like.getTweet();
+                    return new TweetDTO(
+                        tweet.getTweetId(),
+                        tweet.getContent(),
+                        tweet.getUser().getUserId(),
+                        tweet.getUser().getUsername()
+                    );
+                })
+                .collect(Collectors.toList());
     }
 }

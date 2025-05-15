@@ -6,15 +6,43 @@ import Register from './components/Register';
 
 function App() {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [currentUser, setCurrentUser] = useState(null);
   const [activeTab, setActiveTab] = useState('login'); // 'login' or 'register'
 
-  const handleLoginSuccess = () => {
+  const handleLoginSuccess = (userData) => {
     setIsAuthenticated(true);
+    setCurrentUser(userData);
   };
 
   const handleRegisterSuccess = () => {
     // Switch to login tab after successful registration
     setActiveTab('login');
+  };
+
+  const handleLogout = async () => {
+    try {
+      // Call the logout endpoint
+      const response = await fetch('/api/auth/logout', {
+        method: 'POST',
+        credentials: 'include'
+      });
+      
+      // Clear authentication state regardless of response
+      setIsAuthenticated(false);
+      setActiveTab('login');
+      
+      // Log the result
+      if (response.ok) {
+        console.log('Logged out successfully');
+      } else {
+        console.warn('Logout request failed, but user was logged out locally');
+      }
+    } catch (error) {
+      console.error('Error during logout:', error);
+      // Still log out locally even if the request fails
+      setIsAuthenticated(false);
+      setActiveTab('login');
+    }
   };
 
   return (
@@ -25,7 +53,14 @@ function App() {
       </header>
       <main>
         {isAuthenticated ? (
-          <TweetList />
+          <>
+            <div className="app-navbar">
+              <button className="logout-button" onClick={handleLogout}>
+                Logout
+              </button>
+            </div>
+            <TweetList currentUser={currentUser} />
+          </>
         ) : (
           <div className="auth-section">
             <div className="auth-explanation">

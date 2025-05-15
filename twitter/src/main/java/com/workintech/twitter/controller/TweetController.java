@@ -26,25 +26,49 @@ public class TweetController {
 
     @PostMapping
     public ResponseEntity<TweetDTO> createTweet(@Valid @RequestBody TweetDTO tweetDTO) {
-        // Get current user from security context
-        User currentUser = getCurrentUser();
-        log.info("Creating tweet for user: {}", currentUser.getUsername());
-        
-        // Set the user ID from the authenticated user
-        tweetDTO = new TweetDTO(
-            tweetDTO.tweetId(),
-            tweetDTO.content(),
-            currentUser.getUserId(),
-            currentUser.getUsername()
-        );
-        
-        TweetDTO createdTweet = tweetService.createTweet(tweetDTO);
-        return new ResponseEntity<>(createdTweet, HttpStatus.CREATED);
+        try {
+            // Get current user from security context
+            User currentUser = getCurrentUser();
+            if (currentUser == null) {
+                log.error("Attempt to create tweet without authentication");
+                return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+            }
+            
+            log.info("Creating tweet for user: {}", currentUser.getUsername());
+            
+            // Set the user ID from the authenticated user
+            tweetDTO = new TweetDTO(
+                tweetDTO.tweetId(),
+                tweetDTO.content(),
+                currentUser.getUserId(),
+                currentUser.getUsername()
+            );
+            
+            TweetDTO createdTweet = tweetService.createTweet(tweetDTO);
+            return new ResponseEntity<>(createdTweet, HttpStatus.CREATED);
+        } catch (Exception e) {
+            log.error("Error creating tweet: {}", e.getMessage(), e);
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }
     }
 
     @GetMapping("/findByUserId")
     public ResponseEntity<List<TweetDTO>> findTweetsByUserId(@RequestParam Long userId) {
         List<TweetDTO> tweets = tweetService.findTweetsByUserId(userId);
+        return ResponseEntity.ok(tweets);
+    }
+    
+    @GetMapping("/all")
+    public ResponseEntity<List<TweetDTO>> findAllTweets() {
+        log.info("Fetching all tweets");
+        List<TweetDTO> tweets = tweetService.findAllTweets();
+        return ResponseEntity.ok(tweets);
+    }
+    
+    @GetMapping("/search")
+    public ResponseEntity<List<TweetDTO>> searchTweetsByUsername(@RequestParam String username) {
+        log.info("Searching tweets by username: {}", username);
+        List<TweetDTO> tweets = tweetService.findTweetsByUsername(username);
         return ResponseEntity.ok(tweets);
     }
 
@@ -78,9 +102,20 @@ public class TweetController {
     }
 
     private User getCurrentUser() {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        String username = authentication.getName();
-        log.debug("Getting current user: {}", username);
-        return userService.findByUsername(username);
+        try {
+            Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+            if (authentication == null || !authentication.isAuthenticated() || 
+                authentication.getPrincipal().equals("anonymousUser")) {
+                log.warn("No authenticated user found");
+                return null;
+            }
+            
+            String username = authentication.getName();
+            log.debug("Getting current user: {}", username);
+            return userService.findByUsername(username);
+        } catch (Exception e) {
+            log.error("Error getting current user: {}", e.getMessage(), e);
+            return null;
+        }
     }
 }

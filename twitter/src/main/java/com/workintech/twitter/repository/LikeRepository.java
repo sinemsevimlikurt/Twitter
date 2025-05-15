@@ -10,4 +10,5 @@ public interface LikeRepository extends JpaRepository<Like, LikeId> {
     List<Like> findByTweet_TweetId(Long tweetId);
     List<Like> findByUser_UserId(Long userId);
     boolean existsByUser_UserIdAndTweet_TweetId(Long userId, Long tweetId);
+    int countByTweet_TweetId(Long tweetId);
 }

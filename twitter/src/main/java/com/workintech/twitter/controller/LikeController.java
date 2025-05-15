@@ -1,8 +1,11 @@
 package com.workintech.twitter.controller;
 
 import com.workintech.twitter.dto.LikeDTO;
+import com.workintech.twitter.dto.TweetDTO;
 import com.workintech.twitter.entity.User;
 import com.workintech.twitter.service.LikeService;
+
+import java.util.List;
 import com.workintech.twitter.service.UserService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -39,6 +42,13 @@ public class LikeController {
         
         likeService.unlikeTweet(currentUser.getUserId(), likeDTO.tweetId());
         return new ResponseEntity<>(HttpStatus.OK);
+    }
+    
+    @GetMapping("/user/{userId}")
+    public ResponseEntity<List<TweetDTO>> getLikedTweetsByUser(@PathVariable Long userId) {
+        log.info("Getting liked tweets for user: {}", userId);
+        List<TweetDTO> likedTweets = likeService.findLikedTweetsByUserId(userId);
+        return ResponseEntity.ok(likedTweets);
     }
     
     private User getCurrentUser() {

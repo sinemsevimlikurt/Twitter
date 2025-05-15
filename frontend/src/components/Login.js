@@ -13,6 +13,7 @@ const Login = ({ onLoginSuccess }) => {
     setError(null);
 
     try {
+      // Authenticate using the login endpoint
       const response = await fetch('/api/auth/login', {
         method: 'POST',
         headers: {
@@ -22,15 +23,44 @@ const Login = ({ onLoginSuccess }) => {
         credentials: 'include', // Important for cookies
       });
 
+      // Check for successful login
       if (!response.ok) {
+        // If the backend returns an error, throw an error
         throw new Error(`Login failed: ${response.status}`);
       }
+      
+      console.log('Successfully logged in with backend authentication');
+      
+      // If we get here, the backend is available, continue with normal flow
+      // Parse the response data
+      const authData = await response.json();
+      
+      if (authData.status === 'error') {
+        throw new Error('Invalid username or password');
+      }
+      
+      // Wait a short time for the session to be established
+      await new Promise(resolve => setTimeout(resolve, 500));
+      
+      // If login is successful, fetch the current user to verify
+      const userResponse = await fetch('/api/auth/current-user', {
+        credentials: 'include' // Important for cookies
+      });
 
-      // If login is successful
-      onLoginSuccess();
+      if (userResponse.ok) {
+        // Successfully authenticated
+        console.log('Successfully authenticated and verified user');
+        // Get the user data for the profile
+        const userData = await userResponse.json();
+        // Call onLoginSuccess with the user data
+        onLoginSuccess(userData);
+      } else {
+        console.error('Failed to verify user after login:', userResponse.status);
+        throw new Error('Login succeeded but session was not established properly');
+      }
     } catch (err) {
       console.error('Login error:', err);
-      setError(`Login failed: ${err.message}`);
+      setError(`${err.message}`);
     } finally {
       setLoading(false);
     }
